@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req,res) => {
-    res.send('Hello World');
+    res.json({msg: 'Hello World'});
 });
 
 app.get('/api', (req,res) => {
@@ -19,7 +19,7 @@ app.get('/api', (req,res) => {
 });
 
 app.get('/api/*', (req,res) => {
-    res.send('hello from express, somewhere else');
+    res.json({msg: 'hello this is /api/'});
 });
 
 app.listen(process.env.HOST_PORT, () => {
