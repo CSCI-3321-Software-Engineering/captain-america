@@ -10,6 +10,12 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
+const logins = {
+    "student": { password: 123, id: "S0001"},
+    "professor": { password: 123, id: "P0001"},
+    "admin": { password: 123, id: "A0001"},
+}
+
 app.get('/', (req,res) => {
     res.json({msg: 'Hello World'});
 });
