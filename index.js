@@ -3,18 +3,32 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const moment = require('moment/moment');
+const bodyParser = require('body-parser');
+const { result } = require('underscore');
 const app = express();
 
 // Middleware 
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
 const logins = {
-    "student": { password: 123, id: "S0001"},
-    "professor": { password: 123, id: "P0001"},
-    "admin": { password: 123, id: "A0001"},
-}
+    "student": "123",
+    "professor": "123",
+    "admin": "123"
+};
+
+app.post('/login', (req,res) => {
+    const data = req.body;
+    const username = data.user;
+    const password = data.pass;
+
+    const validLogin = logins[username] == password;
+
+    res.json({result: validLogin});
+});
 
 app.get('/', (req,res) => {
     res.json({msg: 'Hello World'});
