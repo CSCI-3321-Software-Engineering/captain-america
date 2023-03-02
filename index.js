@@ -5,6 +5,9 @@ const cors = require('cors');
 const moment = require('moment/moment');
 const bodyParser = require('body-parser');
 const { result } = require('underscore');
+const mongoose = require("mongoose");
+
+
 const app = express();
 
 // Middleware 
@@ -19,6 +22,54 @@ const logins = {
     "professor": "123",
     "admin": "123"
 };
+
+mongoose.set('strictQuery', true);
+mongoose.connect(
+    process.env.MONGODB_URI,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }
+);
+
+const courseSchema = new mongoose.Schema({
+    course_name: {type: String, required: true},
+    course_time: String,
+    course_location: String,
+    pathways: [this]
+
+});
+
+const studentSchema = new mongoose.Schema({
+    student_id: {type: Number, required: true},
+    name: String,
+    year: Number,
+    courses: [courseSchema]
+});
+
+const Course = mongoose.model('Course', courseSchema);
+const Student = mongoose.model('Student', studentSchema);
+
+// const student = new Student({
+//     student_id: 123,
+//     name: "John Doe",
+//     year: 2,
+//     courses: []
+// })
+// student.save().then(
+//     () => console.log("added student entry"),
+//     (err) => console.log(err)
+// );
+
+app.get('/testDB', (req,res) => {
+
+    Student.find({}, (err, found) => {
+        if (!err) {
+            res.send(found);
+        }
+    }).clone().catch(err => console.log("Error occured: " + err));
+});
+
 
 app.post('/login', (req,res) => {
     const data = req.body;
