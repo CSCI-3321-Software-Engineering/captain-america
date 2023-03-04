@@ -4,7 +4,7 @@
   "description": "express server for course portal",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node index.js",
     "dev": "nodemon ."
   },
@@ -34,6 +34,9 @@
     "underscore": "^1.13.6"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "jest": "^29.4.3",
+    "mongodb-memory-server": "^8.11.5",
+    "nodemon": "^2.0.20",
+    "supertest": "^6.3.3"
   }
 }
