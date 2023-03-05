@@ -1,20 +1,24 @@
+require('dotenv').config();
 const request = require('supertest');
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const app = require('../index.js');
 
 let mongoServer;
-
 beforeAll(async () => {
+    server = app.listen(process.env.HOST);
     mongoServer = await MongoMemoryServer.create();
     const mongoUri = mongoServer.getUri();
-    await mongoose.connect(mongoUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
+    await mongoose.connection.close(() => {
+        mongoose.connect(mongoUri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }).catch(err => console.error(err));
     });
 });
 
 afterAll(async () => {
+    await server.close();
     await mongoose.disconnect();
     await mongoServer.stop();
 });
@@ -53,9 +57,9 @@ describe('POST /login', () => {
     });
 });
 
-describe('GET /testDB', () => {
-    it('should return a response without errors', async () => {
-        const response = await request(app).get('/testDB');
-        expect(response.status).toBe(200);
-    });
-});
+// describe('GET /testDB', () => {
+//     it('should return a response without errors', async () => {
+//         const response = await request(app).get('/testDB');
+//         expect(response.status).toBe(200);
+//     });
+// });

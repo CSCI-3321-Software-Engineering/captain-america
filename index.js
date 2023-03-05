@@ -15,7 +15,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const logins = {
     "student": "123",
@@ -33,7 +33,7 @@ mongoose.connect(
 );
 
 const courseSchema = new mongoose.Schema({
-    course_name: {type: String, required: true},
+    course_name: { type: String, required: true },
     course_time: String,
     course_location: String,
     pathways: [this]
@@ -41,7 +41,7 @@ const courseSchema = new mongoose.Schema({
 });
 
 const studentSchema = new mongoose.Schema({
-    student_id: {type: Number, required: true},
+    student_id: { type: Number, required: true },
     name: String,
     year: Number,
     courses: [courseSchema]
@@ -61,7 +61,7 @@ const Student = mongoose.model('Student', studentSchema);
 //     (err) => console.log(err)
 // );
 
-app.get('/testDB', (req,res) => {
+app.get('/testDB', (req, res) => {
 
     Student.find({}, (err, found) => {
         if (!err) {
@@ -71,28 +71,30 @@ app.get('/testDB', (req,res) => {
 });
 
 
-app.post('/login', (req,res) => {
+app.post('/login', (req, res) => {
     const data = req.body;
     const username = data.user;
     const password = data.pass;
 
     const validLogin = logins[username] == password;
 
-    res.json({result: validLogin});
+    res.json({ result: validLogin });
 });
 
-app.get('/', (req,res) => {
-    res.json({msg: 'Hello World'});
+app.get('/', (req, res) => {
+    res.json({ msg: 'Hello World' });
 });
 
-app.get('/api', (req,res) => {
-    res.json({msg: 'Hello from captain-america'});
+app.get('/api', (req, res) => {
+    res.json({ msg: 'Hello from captain-america' });
 });
 
-app.get('/api/*', (req,res) => {
-    res.json({msg: 'hello this is /api/'});
+app.get('/api/*', (req, res) => {
+    res.json({ msg: 'hello this is /api/' });
 });
 
 app.listen(process.env.HOST_PORT, () => {
     console.log(`listening at http://${process.env.HOST_NAME}:${process.env.HOST_PORT}`);
 });
+
+module.exports = app;
