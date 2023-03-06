@@ -62,14 +62,14 @@ const Student = mongoose.model('Student', studentSchema);
 // );
 
 app.get('/testDB', (req, res) => {
-
     Student.find({}, (err, found) => {
-        if (!err) {
-            res.send(found);
+        if (err) {
+            console.log("Error occured: " + err);
+            return res.status(500).send(err);
         }
-    }).clone().catch(err => console.log("Error occured: " + err));
+        res.send(found);
+    });
 });
-
 
 app.post('/login', (req, res) => {
     const data = req.body;

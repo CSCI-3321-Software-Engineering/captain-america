@@ -15,6 +15,12 @@ beforeAll(async () => {
             useUnifiedTopology: true,
         }).catch(err => console.error(err));
     });
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function () {
+        console.log('Connected to MongoDB!');
+    });
+
 });
 
 afterAll(async () => {
@@ -57,9 +63,9 @@ describe('POST /login', () => {
     });
 });
 
-// describe('GET /testDB', () => {
-//     it('should return a response without errors', async () => {
-//         const response = await request(app).get('/testDB');
-//         expect(response.status).toBe(200);
-//     });
-// });
+describe('GET /testDB', () => {
+    it('should return a response without errors', async () => {
+        const response = await request(app).get('/testDB');
+        expect(response.status).toBe(200);
+    });
+});
