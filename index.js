@@ -78,7 +78,7 @@ app.post('/login', (req, res) => {
 
     const validLogin = logins[username] == password;
 
-    res.json({ result: validLogin });
+    res.json({ valid: validLogin });
 });
 
 app.get('/', (req, res) => {
