@@ -93,4 +93,6 @@ app.get('/api/*', (req, res) => {
     res.json({ msg: 'hello this is /api/' });
 });
 
+app.listen(process.env.HOST_PORT);
+
 module.exports = app;
