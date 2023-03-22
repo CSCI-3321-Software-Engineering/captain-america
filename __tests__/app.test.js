@@ -9,12 +9,11 @@ beforeAll(async () => {
     server = app.listen(process.env.HOST);
     mongoServer = await MongoMemoryServer.create();
     const mongoUri = mongoServer.getUri();
-    await mongoose.connection.close(() => {
-        mongoose.connect(mongoUri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }).catch(err => console.error(err));
-    });
+    await mongoose.connection.close();
+    mongoose.connect(
+        mongoUri,
+        { useNewUrlParser: true, useUnifiedTopology: true }
+    );
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', function () {
