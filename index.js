@@ -64,7 +64,7 @@ const Student = mongoose.model('Student', studentSchema);
 app.get('/testDB', (req, res) => {
     Student.find({}, (err, found) => {
         if (err) {
-            console.log("Error occured: " + err);
+            console.error("Error occured: " + err);
             return res.status(500).send(err);
         }
         res.send(found);
@@ -91,10 +91,6 @@ app.get('/api', (req, res) => {
 
 app.get('/api/*', (req, res) => {
     res.json({ msg: 'hello this is /api/' });
-});
-
-app.listen(process.env.HOST_PORT, () => {
-    console.log(`listening at http://${process.env.HOST_NAME}:${process.env.HOST_PORT}`);
 });
 
 module.exports = app;
