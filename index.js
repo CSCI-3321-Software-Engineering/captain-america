@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const { result } = require('underscore');
 const mongoose = require("mongoose");
 
-
 const app = express();
 
 // Middleware 
@@ -17,68 +16,45 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const logins = {
-    "student": "123",
-    "professor": "123",
-    "admin": "123"
-};
+// mongoose.connect(process.env.MONGODB_URI,
+//   {
+//     useNewUrlParser: true,
+//     useFindAndModify: false,
+//     useUnifiedTopology: true,
+//   }
+// // );
+// mongoose.connect(process.env.MONGODB_URI);
+// const connection = mongoose.connection;
 
-mongoose.set('strictQuery', true);
-mongoose.connect(
-    process.env.MONGODB_URI,
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }
-);
+// connection.on('error', console.error.bind(console, 'connection error:'));
 
-const courseSchema = new mongoose.Schema({
-    course_name: { type: String, required: true },
-    course_time: String,
-    course_location: String,
-    pathways: [this]
+app.post('/courses', (req,res) => {
+    const username = req.body.user;
 
-});
+    // connection.once('open', async () => {
+    //     const collection = connection.db.collection("people");
+    //     collection.find({username: username}).toArray((err, data) => {
+    //         res.json({courses: data.courses});
+    //     })
+    // })
+    
+    res.json({courses: "1 2 3 4"})
 
-const studentSchema = new mongoose.Schema({
-    student_id: { type: Number, required: true },
-    name: String,
-    year: Number,
-    courses: [courseSchema]
-});
+})
 
-const Course = mongoose.model('Course', courseSchema);
-const Student = mongoose.model('Student', studentSchema);
-
-// const student = new Student({
-//     student_id: 123,
-//     name: "John Doe",
-//     year: 2,
-//     courses: []
-// })
-// student.save().then(
-//     () => console.log("added student entry"),
-//     (err) => console.log(err)
-// );
-
-app.get('/testDB', (req, res) => {
-    Student.find({}, (err, found) => {
-        if (err) {
-            console.error("Error occured: " + err);
-            return res.status(500).send(err);
-        }
-        res.send(found);
-    });
-});
 
 app.post('/login', (req, res) => {
     const data = req.body;
-    const username = data.user;
-    const password = data.pass;
+    const user = data.user;
+    const pass = data.pass;
+    // console.log("called");
+    
+    // const collection = connection.collection("people");
+    // const docs = collection.find({username: user}).exec();
 
-    const validLogin = logins[username] == password;
+    res.json({valid: true});
 
-    res.json({ valid: validLogin });
+
 });
 
 app.get('/', (req, res) => {
