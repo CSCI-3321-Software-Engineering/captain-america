@@ -1,7 +1,6 @@
-
+import csv
 from dotenv import dotenv_values
 from pymongo import MongoClient
-import csv
 from enum import IntEnum
 
 class Fields(IntEnum):
@@ -10,16 +9,12 @@ class Fields(IntEnum):
     CREDITS = 2
     PREREQS = 3
 
-
-config = dotenv_values(".env")
-
+config = dotenv_values("../.env")
 client = MongoClient(config["MONGODB_URI"])
-
 client = client['test']
-
 collection_name = client["courses"]
 
-with open('cleanPrerequisites.csv', 'r') as csvfile:
+with open('../cleanPrerequisites.csv', 'r') as csvfile:
     next(csvfile)
     spamreader = csv.reader(csvfile, quotechar='"')
     batch_load = []
@@ -30,6 +25,3 @@ with open('cleanPrerequisites.csv', 'r') as csvfile:
         })
     
     collection_name.insert_many(batch_load)
-
-
-
