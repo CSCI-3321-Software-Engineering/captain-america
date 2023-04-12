@@ -14,5 +14,5 @@ var UserSchema = new Schema({
     shoppingCart: String,
 });
 
-var User = mongoose.model("User", UserSchema);
+const User = mongoose.model("User", UserSchema);
 module.exports = User;
