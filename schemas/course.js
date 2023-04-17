@@ -9,7 +9,8 @@ var CourseSchema = new Schema({
     creditHours: Number,
     prereqs: String,
     enrolled: Number,
-    capacity: Number
+    capacity: Number,
+    days: String
 });
 
 var Course = mongoose.model("Course", CourseSchema);
