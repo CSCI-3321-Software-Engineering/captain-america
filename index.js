@@ -18,6 +18,22 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.post('/api/searchcourses', (req, res) => {
+    const filters = req.body.selectedFilters
+    //parse list and make new variables for each
+    selectedDeptValue = filters[0]
+    selectedHoursValue = filters[1]
+    selectedLevelValue = filters[2]
+    selectedPrereqValue = filters[3] 
+    selectedDaysValue = filters[4] 
+    selectedPathwaysValue = filters[5] 
+    //query the db for the results
+    Course.find({pathways: selectedPathwaysValue}).exec((err, course) => {
+        res.json(course);
+        console.log(course.courseName)
+    })
+})
+
 app.post("/api/userinfo", (req, res) => {
     const data = req.body;
     if (!data.user) {
