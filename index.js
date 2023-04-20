@@ -4,7 +4,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const moment = require("moment/moment");
 const bodyParser = require("body-parser");
-const { result } = require("underscore");
+const { result, select } = require("underscore");
 const mongoose = require("mongoose");
 const User = require("./schemas/user");
 const Course = require("./schemas/course");
@@ -19,18 +19,31 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post('/api/searchcourses', (req, res) => {
-    const filters = req.body.selectedFilters
+    const filters = req.body.courseTags
+    console.log(filters)
     //parse list and make new variables for each
-    selectedDeptValue = filters[0]
-    selectedHoursValue = filters[1]
-    selectedLevelValue = filters[2]
-    selectedPrereqValue = filters[3] 
-    selectedDaysValue = filters[4] 
-    selectedPathwaysValue = filters[5] 
+    const selectedDeptValue = filters[0]
+    const selectedHoursValue = Number(filters[1])
+    const selectedLevelValue = filters[2]
+    const selectedPrereqValue = filters[3] 
+    const selectedDaysValue = filters[4]
+    const selectedPathwaysValue = filters[5]
+    
+    //add level?
+
+    let query = {}
+    if(selectedPathwaysValue) {
+        query.pathways = selectedPathwaysValue
+    }
+    if(selectedHoursValue) {
+        query.creditHours = selectedHoursValue
+    }
+
     //query the db for the results
-    Course.find({pathways: selectedPathwaysValue}).exec((err, course) => {
-        res.json(course);
-        console.log(course.courseName)
+    Course.find(query).exec((err, course) => {
+        console.log(course)
+        console.log(query)
+        res.json({courses: course})
     })
 })
 
