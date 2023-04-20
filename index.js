@@ -28,10 +28,21 @@ app.post('/api/searchcourses', (req, res) => {
     const selectedPrereqValue = filters[3] 
     const selectedDaysValue = filters[4]
     const selectedPathwaysValue = filters[5]
+    const selectedSearchValue = filters[6]
     
     //add level?
 
     let query = {}
+
+    if(selectedSearchValue){
+    query = {
+        $or: [
+          { title: { $regex: selectedSearchValue , $options: 'i'} },
+          { professor: { $regex: selectedSearchValue , $options: 'i'} },
+          { title: { $exists: false }, professor: { $exists: false } }
+        ]
+      }
+    }
     if(selectedPathwaysValue) {
         query.pathways = selectedPathwaysValue
     }
