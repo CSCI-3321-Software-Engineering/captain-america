@@ -49,6 +49,19 @@ app.post('/api/searchcourses', (req, res) => {
     if(selectedHoursValue) {
         query.creditHours = selectedHoursValue
     }
+    if(selectedDaysValue) {
+        query.days = selectedDaysValue
+        //query.days = { $regex: selectedDaysValue , $options: 'i'}
+    }/*
+    if(selectedPrereqValue) {
+        query.prereqs = selectedPrereqValue
+    }
+    if(selectedDeptValue) {
+        query.department = selectedDeptValue
+    }
+    if(selectedLevelValue) {
+        query.level = selectedLevelValue
+    }*/
 
     //query the db for the results
     Course.find(query).exec((err, course) => {
