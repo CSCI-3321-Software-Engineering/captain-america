@@ -11,7 +11,9 @@ var CourseSchema = new Schema({
     enrolled: Number,
     capacity: Number,
     days: String,
-    pathways: String
+    pathways: String,
+    department: String,
+    level: Number
 });
 
 var Course = mongoose.model("Course", CourseSchema);

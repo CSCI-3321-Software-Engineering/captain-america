@@ -4,7 +4,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const moment = require("moment/moment");
 const bodyParser = require("body-parser");
-const { result } = require("underscore");
+const { result, select } = require("underscore");
 const mongoose = require("mongoose");
 const User = require("./schemas/user");
 const Course = require("./schemas/course");
@@ -19,6 +19,59 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.post('/api/searchcourses', (req, res) => {
+    const filters = req.body.courseTags
+    console.log(filters)
+    //parse list and make new variables for each
+    const selectedDeptValue = filters[0]
+    const selectedHoursValue = Number(filters[1])
+    const selectedLevelValue = Number(filters[2])
+    const selectedPrereqValue = filters[3] 
+    const selectedDaysValue = filters[4]
+    const selectedPathwaysValue = filters[5]
+    const selectedSearchValue = filters[6]
+    
+    //add level?
+
+    let query = {}
+
+    if(selectedSearchValue){
+    query = {
+        $or: [
+          { title: { $regex: selectedSearchValue , $options: 'i'} },
+          { professor: { $regex: selectedSearchValue , $options: 'i'} },
+          { title: { $exists: false }, professor: { $exists: false } }
+        ]
+      }
+    }
+    if(selectedPathwaysValue) {
+        query.pathways = selectedPathwaysValue
+    }
+    if(selectedHoursValue) {
+        query.creditHours = selectedHoursValue
+    }
+    if(selectedDaysValue) {
+        query.days = selectedDaysValue
+        //query.days = { $regex: selectedDaysValue , $options: 'i'}
+    }
+    if(selectedDeptValue) {
+        query.department = selectedDeptValue
+    }
+    if(selectedLevelValue) {
+        query.level = selectedLevelValue
+    }/*
+    if(selectedPrereqValue) {
+        query.prereqs = selectedPrereqValue
+    }*/
+
+    //query the db for the results
+    Course.find(query).exec((err, course) => {
+        console.log(course)
+        console.log(query)
+        res.json({courses: course})
+    })
+})
 
 app.post("/api/userinfo", (req, res) => {
     const data = req.body;
