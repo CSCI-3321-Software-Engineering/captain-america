@@ -24,7 +24,7 @@ app.post('/api/searchcourses', (req, res) => {
     //parse list and make new variables for each
     const selectedDeptValue = filters[0]
     const selectedHoursValue = Number(filters[1])
-    const selectedLevelValue = filters[2]
+    const selectedLevelValue = Number(filters[2])
     const selectedPrereqValue = filters[3] 
     const selectedDaysValue = filters[4]
     const selectedPathwaysValue = filters[5]
@@ -52,15 +52,15 @@ app.post('/api/searchcourses', (req, res) => {
     if(selectedDaysValue) {
         query.days = selectedDaysValue
         //query.days = { $regex: selectedDaysValue , $options: 'i'}
-    }/*
-    if(selectedPrereqValue) {
-        query.prereqs = selectedPrereqValue
     }
     if(selectedDeptValue) {
         query.department = selectedDeptValue
     }
     if(selectedLevelValue) {
         query.level = selectedLevelValue
+    }/*
+    if(selectedPrereqValue) {
+        query.prereqs = selectedPrereqValue
     }*/
 
     //query the db for the results
