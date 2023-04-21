@@ -8,6 +8,8 @@ const { result } = require("underscore");
 const mongoose = require("mongoose");
 const User = require("./schemas/user");
 const Course = require("./schemas/course");
+const Logs = require("./schemas/logs");
+
 
 const app = express();
 
@@ -25,6 +27,12 @@ app.post("/api/userinfo", (req, res) => {
             .status(400)
             .send({ error: "User parameter missing in request" });
     }
+    let log = new Logs({
+        title: "User info accessed",
+        user: data.user,
+        timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
+    });
+    log.save();
     User.findOne({ username: data.user }).exec(
         (err, user) => {
             if (err) {
@@ -54,6 +62,12 @@ app.post("/api/getcourses", (req, res) => {
                 error: "Registration parameter missing in request",
             });
     }
+    let log = new Logs({
+        title: "User courses accessed",
+        user: data.user,
+        timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
+    });
+    log.save();
     User.findOne({ username: data.user }).exec(
         (err, user) => {
             if (err) {
@@ -75,6 +89,12 @@ app.post("/api/getcourses", (req, res) => {
 
 app.post("/api/getcourse", (req, res) => {
     const data = req.body;
+    let log = new Logs({
+        title: "Single course accessed",
+        user: data.user,
+        timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
+    });
+    log.save();
     Course.findOne({ courseNumber: data.courseNumber }).exec(
         (err, course) => {
             if (err) {
@@ -100,6 +120,12 @@ app.post("/api/login", (req, res) => {
             .status(400)
             .send({ error: "Password parameter missing in request" });
     }
+    let log = new Logs({
+        title: "User login attempted",
+        user: data.user,
+        timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
+    });
+    log.save();
     User.findOne({ username: data.user }).exec(
         (err, user) => {
             if (err) {
