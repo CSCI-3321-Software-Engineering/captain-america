@@ -7,5 +7,5 @@ var LogsSchema = new Schema({
     timeStamp: String
 });
 
-var Logs= mongoose.model("Logs", Logschema);
+var Logs = mongoose.model("Logs", Logschema);
 module.exports = Logs;
