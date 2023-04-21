@@ -148,7 +148,7 @@ describe("API tests", () => {
         .send({ pass: user.password })
         .expect(400);
 
-      expect(res.body.error).toEqual("User missing");
+      expect(res.body.error).toEqual("User parameter missing in request");
     });
 
     test("returns 400 for missing pass field", async () => {
@@ -157,7 +157,7 @@ describe("API tests", () => {
         .send({ user: user.username })
         .expect(400);
 
-      expect(res.body.error).toEqual("Password missing");
+      expect(res.body.error).toEqual("Password parameter missing in request");
     });
 
     test("returns invalid for non-existent user", async () => {
