@@ -20,9 +20,43 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.post('/api/addtocart', (req,res) => {
+    const course_name = req.body.course_name;
+    const username = req.body.username;
+
+    User.findOne({username: username}).exec(
+        (err, user) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (!user) {
+                return res
+                    .status(401)
+                    .json({ error: "User not found" });
+            }
+            var cart = user.shoppingCart;
+            if (cart) {
+                cart += (course_name + " ")
+            } else {
+                cart = course_name
+            }
+            User.updateOne({username: username}, {
+                $set: {
+                    asdad: cart
+                }},
+                {
+                    upsert: true
+                }
+
+            );
+        
+        }
+    )
+})
+
 app.post('/api/searchcourses', (req, res) => {
     const filters = req.body.courseTags
-    console.log(filters)
+    // console.log(filters)
     //parse list and make new variables for each
     const selectedDeptValue = filters[0]
     const selectedHoursValue = Number(filters[1])
@@ -67,8 +101,8 @@ app.post('/api/searchcourses', (req, res) => {
 
     //query the db for the results
     Course.find(query).exec((err, course) => {
-        console.log(course)
-        console.log(query)
+        // console.log(course)
+        // console.log(query)
         res.json({courses: course})
     })
 })
@@ -148,7 +182,7 @@ app.post("/api/getcourse", (req, res) => {
         timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
     });
     log.save();
-    Course.findOne({ courseNumber: data.courseNumber }).exec(
+    Course.findOne({ courseNumber: data.courseName }).exec(
         (err, course) => {
             if (err) {
                 return res.status(500).send({ error: err.message });
