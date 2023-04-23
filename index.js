@@ -189,7 +189,7 @@ app.post("/api/getcourse", (req, res) => {
             }
             if (!course) {
                 return res
-                    .status(401)
+                    .status(401)    
                     .send({ error: "Course not found" });
             }
             return res.send(course);
