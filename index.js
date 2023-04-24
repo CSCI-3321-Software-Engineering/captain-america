@@ -54,7 +54,7 @@ app.post("/api/getcourses", (req, res) => {
                 error: "Registration parameter missing in request",
             });
     }
-    User.findOne({ username: data.user }).exec(
+    mongoose.model("users" + data.term, User.UserSchema).findOne({ username: data.user }).exec(
         (err, user) => {
             if (err) {
                 return res.status(500).send({ error: err.message });
@@ -75,7 +75,7 @@ app.post("/api/getcourses", (req, res) => {
 
 app.post("/api/getcourse", (req, res) => {
     const data = req.body;
-    Course.findOne({ courseNumber: data.courseNumber }).exec(
+    mongoose.model("courses" + data.term, Course.CourseSchema).findOne({ courseNumber: data.courseName }).exec(
         (err, course) => {
             if (err) {
                 return res.status(500).send({ error: err.message });
@@ -100,7 +100,7 @@ app.post("/api/login", (req, res) => {
             .status(400)
             .send({ error: "Password parameter missing in request" });
     }
-    User.findOne({ username: data.user }).exec(
+    User.User.findOne({ username: data.user }).exec(
         (err, user) => {
             if (err) {
                 return res.status(400).send({ error: err.message });
