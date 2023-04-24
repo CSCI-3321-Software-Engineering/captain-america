@@ -34,25 +34,32 @@ app.post('/api/addtocart', (req,res) => {
                     .status(401)
                     .json({ error: "User not found" });
             }
+
             var cart = user.shoppingCart;
+            console.log(cart)
             if (cart) {
-                cart += (course_name + " ")
+                cart += course_name;
             } else {
-                cart = course_name
+                cart = course_name;
             }
+            cart += " ";
             User.updateOne({username: username}, {
                 $set: {
-                    asdad: cart
-                }},
-                {
-                    upsert: true
+                    shoppingCart: cart
                 }
+            },
+            {
+                upsert: true
+            },
+            (err, result) => {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+                return res.status(200).json({ message: "Course added to cart" });
+            });
+    });
+});
 
-            );
-        
-        }
-    )
-})
 
 app.post('/api/searchcourses', (req, res) => {
     const filters = req.body.courseTags
