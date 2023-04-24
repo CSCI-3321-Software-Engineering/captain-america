@@ -16,5 +16,5 @@ var CourseSchema = new Schema({
     level: Number
 });
 
-var Course = mongoose.model("Course", CourseSchema);
-module.exports = Course;
+var Course = mongoose.model("courses", CourseSchema);
+module.exports = { Course, CourseSchema };

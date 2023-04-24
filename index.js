@@ -162,7 +162,7 @@ app.post("/api/getcourses", (req, res) => {
         timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
     });
     log.save();
-    User.findOne({ username: data.user }).exec(
+    mongoose.model("users" + data.term, User.UserSchema).findOne({ username: data.user }).exec(
         (err, user) => {
             if (err) {
                 return res.status(500).send({ error: err.message });
@@ -189,7 +189,7 @@ app.post("/api/getcourse", (req, res) => {
         timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
     });
     log.save();
-    Course.findOne({ courseNumber: data.courseName }).exec(
+    mongoose.model("courses" + data.term, Course.CourseSchema).findOne({ courseNumber: data.courseName }).exec(
         (err, course) => {
             if (err) {
                 return res.status(500).send({ error: err.message });
@@ -220,7 +220,7 @@ app.post("/api/login", (req, res) => {
         timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
     });
     log.save();
-    User.findOne({ username: data.user }).exec(
+    User.User.findOne({ username: data.user }).exec(
         (err, user) => {
             if (err) {
                 return res.status(400).send({ error: err.message });
