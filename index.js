@@ -20,6 +20,17 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.get('/api/logs', (req,res) => {
+    Logs.find({}).sort({ $natural: -1 }).limit(100).exec(
+        (err, logs) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            return res.status(200).json({response: logs})
+        }
+    )
+})
+
 app.post('/api/addtocart', (req, res) => {
     const course_name = req.body.course_name;
     const username = req.body.username;
