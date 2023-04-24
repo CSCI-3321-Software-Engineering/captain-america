@@ -20,11 +20,11 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.post('/api/addtocart', (req,res) => {
+app.post('/api/addtocart', (req, res) => {
     const course_name = req.body.course_name;
     const username = req.body.username;
 
-    User.findOne({username: username}).exec(
+    User.User.findOne({ username: username }).exec(
         (err, user) => {
             if (err) {
                 return res.status(500).json({ error: err.message });
@@ -43,21 +43,21 @@ app.post('/api/addtocart', (req,res) => {
                 cart = course_name;
             }
             cart += " ";
-            User.updateOne({username: username}, {
+            User.User.updateOne({ username: username }, {
                 $set: {
                     shoppingCart: cart
                 }
             },
-            {
-                upsert: true
-            },
-            (err, result) => {
-                if (err) {
-                    return res.status(500).json({ error: err.message });
-                }
-                return res.status(200).json({ message: "Course added to cart" });
-            });
-    });
+                {
+                    upsert: true
+                },
+                (err, result) => {
+                    if (err) {
+                        return res.status(500).json({ error: err.message });
+                    }
+                    return res.status(200).json({ message: "Course added to cart" });
+                });
+        });
 });
 
 
@@ -68,38 +68,38 @@ app.post('/api/searchcourses', (req, res) => {
     const selectedDeptValue = filters[0]
     const selectedHoursValue = Number(filters[1])
     const selectedLevelValue = Number(filters[2])
-    const selectedPrereqValue = filters[3] 
+    const selectedPrereqValue = filters[3]
     const selectedDaysValue = filters[4]
     const selectedPathwaysValue = filters[5]
     const selectedSearchValue = filters[6]
-    
+
     //add level?
 
     let query = {}
 
-    if(selectedSearchValue){
-    query = {
-        $or: [
-          { title: { $regex: selectedSearchValue , $options: 'i'} },
-          { professor: { $regex: selectedSearchValue , $options: 'i'} },
-          { title: { $exists: false }, professor: { $exists: false } }
-        ]
-      }
+    if (selectedSearchValue) {
+        query = {
+            $or: [
+                { title: { $regex: selectedSearchValue, $options: 'i' } },
+                { professor: { $regex: selectedSearchValue, $options: 'i' } },
+                { title: { $exists: false }, professor: { $exists: false } }
+            ]
+        }
     }
-    if(selectedPathwaysValue) {
+    if (selectedPathwaysValue) {
         query.pathways = selectedPathwaysValue
     }
-    if(selectedHoursValue) {
+    if (selectedHoursValue) {
         query.creditHours = selectedHoursValue
     }
-    if(selectedDaysValue) {
+    if (selectedDaysValue) {
         query.days = selectedDaysValue
         //query.days = { $regex: selectedDaysValue , $options: 'i'}
     }
-    if(selectedDeptValue) {
+    if (selectedDeptValue) {
         query.department = selectedDeptValue
     }
-    if(selectedLevelValue) {
+    if (selectedLevelValue) {
         query.level = selectedLevelValue
     }/*
     if(selectedPrereqValue) {
@@ -107,10 +107,10 @@ app.post('/api/searchcourses', (req, res) => {
     }*/
 
     //query the db for the results
-    Course.find(query).exec((err, course) => {
+    Course.Course.find(query).exec((err, course) => {
         // console.log(course)
         // console.log(query)
-        res.json({courses: course})
+        res.json({ courses: course })
     })
 })
 
@@ -127,7 +127,7 @@ app.post("/api/userinfo", (req, res) => {
         timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
     });
     log.save();
-    User.findOne({ username: data.user }).exec(
+    User.User.findOne({ username: data.user }).exec(
         (err, user) => {
             if (err) {
                 return res.status(500).json({ error: err.message });
@@ -143,6 +143,45 @@ app.post("/api/userinfo", (req, res) => {
 });
 
 app.post("/api/getcourses", (req, res) => {
+    const data = req.body;
+    if (data.user == null) {
+        return res
+            .status(400)
+            .send({ error: "User parameter missing in request" });
+    }
+    if (data.registration == null) {
+        return res
+            .status(400)
+            .send({
+                error: "Registration parameter missing in request",
+            });
+    }
+    let log = new Logs({
+        title: "User courses accessed",
+        user: data.user,
+        timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
+    });
+    log.save();
+    User.User.findOne({ username: data.user }).exec(
+        (err, user) => {
+            if (err) {
+                return res.status(500).send({ error: err.message });
+            }
+            if (!user) {
+                return res
+                    .status(401)
+                    .send({ error: "User not found" });
+            }
+            if (data.registration) {
+                return res.json({ courses: user.shoppingCart });
+            } else {
+                return res.json({ courses: user.courses });
+            }
+        }
+    );
+});
+
+app.post("/api/getsemestercourses", (req, res) => {
     const data = req.body;
     if (data.user == null) {
         return res
@@ -189,6 +228,29 @@ app.post("/api/getcourse", (req, res) => {
         timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
     });
     log.save();
+    Course.Course.findOne({ courseNumber: data.courseName }).exec(
+        (err, course) => {
+            if (err) {
+                return res.status(500).send({ error: err.message });
+            }
+            if (!course) {
+                return res
+                    .status(401)
+                    .send({ error: "Course not found" });
+            }
+            return res.send(course);
+        }
+    );
+});
+
+app.post("/api/getsemestercourse", (req, res) => {
+    const data = req.body;
+    let log = new Logs({
+        title: "Single course accessed",
+        user: data.user,
+        timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
+    });
+    log.save();
     mongoose.model("courses" + data.term, Course.CourseSchema).findOne({ courseNumber: data.courseName }).exec(
         (err, course) => {
             if (err) {
@@ -196,7 +258,7 @@ app.post("/api/getcourse", (req, res) => {
             }
             if (!course) {
                 return res
-                    .status(401)    
+                    .status(401)
                     .send({ error: "Course not found" });
             }
             return res.send(course);
