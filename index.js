@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/api/logs', (req,res) => {
-    Logs.find({}).sort({ $natural: -1 }).limit(100).exec(
+    Logs.find({ user: { $exists: true } }).sort({ $natural: -1 }).limit(100).exec(
         (err, logs) => {
             if (err) {
                 return res.status(500).json({ error: err.message });
@@ -66,6 +66,12 @@ app.post('/api/addtocart', (req, res) => {
                     if (err) {
                         return res.status(500).json({ error: err.message });
                     }
+                    let log = new Logs({
+                        title: "Registration action: " + course_name,
+                        user: username,
+                        timeStamp: moment().format("MM-DD-yyyy HH:mm:ss"),
+                    });
+                    log.save();
                     return res.status(200).json({ message: "Course added to cart" });
                 });
         });
