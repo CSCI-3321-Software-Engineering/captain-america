@@ -22,20 +22,20 @@ describe("API tests", () => {
     });
 
     // create a test user
-    user = await User.create({
+    user = await User.User.create({
       username: "test",
       password: "test123",
       userType: "student",
     });
-    course = await Course.create({
+    course = await Course.Course.create({
       courseNumber: "CSCI101",
       title: "Introduction to Computer Science",
     });
   });
 
   afterAll(async () => {
-    await User.deleteMany({});
-    await Course.deleteMany({});
+    await User.User.deleteMany({});
+    await Course.Course({});
     await mongoose.connection.close();
     await mongod.stop();
   });
@@ -104,7 +104,7 @@ describe("API tests", () => {
     test("returns course", async () => {
       const res = await request(app)
         .post("/api/getcourse")
-        .send({ courseNumber: course.courseNumber })
+        .send({ courseName: course.courseNumber })
         .expect(200);
 
       expect(res.body.courseNumber).toBe(
